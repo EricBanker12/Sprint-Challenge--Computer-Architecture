@@ -46,6 +46,7 @@ class CPU:
 
         # alu instructions
         ADD = 0b10100000
+        ADDI = 0b10100101
         AND = 0b10101000
         CMP = 0b10100111
         DEC = 0b01100110
@@ -63,6 +64,7 @@ class CPU:
         # handlers
         self.handle = {
             ADD: self.handle_ADD,
+            ADDI: self.handle_ADDI,
             CALL: self.handle_CALL,
             CMP: self.handle_CMP,
             DEC: self.handle_DEC,
@@ -209,6 +211,10 @@ class CPU:
     def handle_ADD(self, a, b):
         """Add values of 2 registers and store sum in the first."""
         self.reg[a] += self.reg[b]
+
+    def handle_ADDI(self, a, b):
+        """Add values of a register and an immediate number and store the sum in the register."""
+        self.reg[a] += b
 
     def handle_CALL(self, a, b):
         """Add next PC ptr to stack, set PC to address from register"""
