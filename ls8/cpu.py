@@ -65,6 +65,7 @@ class CPU:
         self.handle = {
             ADD: self.handle_ADD,
             ADDI: self.handle_ADDI,
+            AND: self.handle_AND,
             CALL: self.handle_CALL,
             CMP: self.handle_CMP,
             DEC: self.handle_DEC,
@@ -77,14 +78,19 @@ class CPU:
             JNE: self.handle_JNE,
             LD: self.handle_LD,
             LDI: self.handle_LDI,
+            MOD: self.handle_MOD,
             MUL: self.handle_MUL,
+            NOT: self.handle_NOT,
+            OR: self.handle_OR,
             POP: self.handle_POP,
             PRA: self.handle_PRA,
             PRN: self.handle_PRN,
             PUSH: self.handle_PUSH,
             RET: self.handle_RET,
             SHL: self.handle_SHL,
+            SHR: self.handle_SHR,
             ST: self.handle_ST,
+            XOR: self.handle_XOR,
         }
 
     def ram_read(self, address):
@@ -216,6 +222,10 @@ class CPU:
         """Add values of a register and an immediate number and store the sum in the register."""
         self.reg[a] += b
 
+    def handle_AND(self, a, b):
+        """Bitwise-AND the values in registerA and registerB, then store the result in registerA."""
+        self.reg[a] = self.reg[a] & self.reg[b]
+
     def handle_CALL(self, a, b):
         """Add next PC ptr to stack, set PC to address from register"""
         self.reg[7] -= 1
@@ -281,9 +291,25 @@ class CPU:
         """Store a value in a register."""
         self.reg[a] = b
 
+    def handle_MOD(self, a, b):
+        """Divide the value in the first register by the value in the second, storing the remainder of the result in registerA."""
+        if not self.reg[b]:
+            raise Exception('Division by 0 not allowed')
+            self.running = False
+        else:
+            self.reg[a] = self.reg[a] % self.reg[b]
+
     def handle_MUL(self, a, b):
         """Multiply values of 2 registers and store product in the first."""
         self.reg[a] *= self.reg[b]
+
+    def handle_NOT(self, a, b):
+        """Perform a bitwise-NOT on the value in a register, storing the result in the register."""
+        self.reg[a] = ~ self.reg[a]
+
+    def handle_OR(self, a, b):
+        """Perform a bitwise-OR between the values in registerA and registerB, storing the result in registerA."""
+        self.reg[a] = self.reg[a] | self.reg[b]
 
     def handle_POP(self, a, b):
         """Pop value from top of the stack to a register and update stack pointer (R7)."""
@@ -316,8 +342,16 @@ class CPU:
         """Shift the value in registerA left by the number of bits specified in registerB, filling the low bits with 0."""
         self.reg[a] = self.reg[a] << self.reg[b]
 
+    def handle_SHR(self, a, b):
+        """Shift the value in registerA right by the number of bits specified in registerB, filling the high bits with 0."""
+        self.reg[a] = self.reg[a] >> self.reg[b]
+
     def handle_ST(self, a, b):
         """Store value in registerB in the address stored in registerA."""
         ptr = self.reg[a]
         val = self.reg[b]
         self.ram_write(val, ptr)
+
+    def handle_XOR(self, a, b):
+        """Perform a bitwise-XOR between the values in registerA and registerB, storing the result in registerA."""
+        self.reg[a] = self.reg[a] ^ self.reg[b]
