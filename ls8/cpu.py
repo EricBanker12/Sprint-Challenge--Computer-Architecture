@@ -72,6 +72,7 @@ class CPU:
             JEQ: self.handle_JEQ,
             JLT: self.handle_JLT,
             JMP: self.handle_JMP,
+            JNE: self.handle_JNE,
             LD: self.handle_LD,
             LDI: self.handle_LDI,
             MUL: self.handle_MUL,
@@ -260,6 +261,11 @@ class CPU:
     def handle_JMP(self, a, b):
         """Jump to the address stored in the given register."""
         self.pc = self.reg[a]
+
+    def handle_JNE(self, a, b):
+        """If E flag is clear (false, 0), jump to the address stored in the given register."""
+        if not (self.fl & 0b00000001):
+            self.pc = self.reg[a]
 
     def handle_LD(self, a, b):
         """Loads registerA with the value at the memory address stored in registerB."""
