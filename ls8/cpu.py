@@ -216,11 +216,11 @@ class CPU:
     
     def handle_ADD(self, a, b):
         """Add values of 2 registers and store sum in the first."""
-        self.reg[a] += self.reg[b]
+        self.reg[a] = (self.reg[a] + self.reg[b]) & 255
 
     def handle_ADDI(self, a, b):
         """Add values of a register and an immediate number and store the sum in the register."""
-        self.reg[a] += b
+        self.reg[a] = (self.reg[a] + b) & 255
 
     def handle_AND(self, a, b):
         """Bitwise-AND the values in registerA and registerB, then store the result in registerA."""
@@ -247,7 +247,7 @@ class CPU:
 
     def handle_DEC(self, a, b):
         """Decrement (subtract 1 from) the value in the given register."""
-        self.reg[a] -= 1
+        self.reg[a] = (self.reg[a] - 1) & 255
 
     def handle_HLT(self, a, b):
         """Stop the cpu run loop."""
@@ -255,7 +255,7 @@ class CPU:
 
     def handle_INC(self, a, b):
         """Increment (add 1 to) the value in the given register."""
-        self.reg[a] += 1
+        self.reg[a] = (self.reg[a] + 1) & 255
 
     def handle_IRET(self, a, b):
         """Return from an interrupt handler."""
@@ -301,11 +301,11 @@ class CPU:
 
     def handle_MUL(self, a, b):
         """Multiply values of 2 registers and store product in the first."""
-        self.reg[a] *= self.reg[b]
+        self.reg[a] = (self.reg[a] * self.reg[b]) & 255
 
     def handle_NOT(self, a, b):
         """Perform a bitwise-NOT on the value in a register, storing the result in the register."""
-        self.reg[a] = ~ self.reg[a]
+        self.reg[a] = (~ self.reg[a]) & 255
 
     def handle_OR(self, a, b):
         """Perform a bitwise-OR between the values in registerA and registerB, storing the result in registerA."""
@@ -340,7 +340,7 @@ class CPU:
 
     def handle_SHL(self, a, b):
         """Shift the value in registerA left by the number of bits specified in registerB, filling the low bits with 0."""
-        self.reg[a] = self.reg[a] << self.reg[b]
+        self.reg[a] = (self.reg[a] << self.reg[b]) & 255
 
     def handle_SHR(self, a, b):
         """Shift the value in registerA right by the number of bits specified in registerB, filling the high bits with 0."""
